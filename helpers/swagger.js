@@ -9,7 +9,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3005',
+        url: 'https://teramebli-api.onrender.com',
       },
     ],
   },
