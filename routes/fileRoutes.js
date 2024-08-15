@@ -8,10 +8,9 @@ const fileRouter = express.Router();
 /**
  * @swagger
  * tags:
- *   name: Data Base
+ *   name: Database
  *   description: API for managing products
  */
-
 /**
  * @swagger
  * /api/file/create:
@@ -37,7 +36,6 @@ const fileRouter = express.Router();
  *         description: Internal server error
  */
 fileRouter.post('/create', upload.single('file'), createDB);
-
 /**
  * @swagger
  * /api/file/update:
