@@ -50,7 +50,7 @@ categoryRouter.get("/", getAllCategories);
  *     tags:
  *       - Category
  *     summary: Get category with products
- *     description: Retrieve a specific category by ID along with a paginated list of products associated with that category.
+ *     description: Retrieve a specific category by ID along with a paginated list of products associated with that category. Use field id not _id
  *     parameters:
  *       - name: categoryId
  *         in: path

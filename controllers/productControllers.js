@@ -26,3 +26,16 @@ export const getAllProducts = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getProduct = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findOne({ offerId: productId });
+if (!product) {
+      throw HttpError(404, "Product not found");
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    next(error);
+  }
+};

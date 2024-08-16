@@ -10,6 +10,7 @@ const options = {
     servers: [
       {
         url: 'https://teramebli-api.onrender.com',
+        // url: 'http://localhost:3005/',
       },
     ],
   },

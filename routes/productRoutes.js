@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllProducts } from "../controllers/productControllers.js";
+import { getAllProducts, getProduct } from "../controllers/productControllers.js";
 
 const productRouter = express.Router();
 
@@ -69,6 +69,45 @@ const productRouter = express.Router();
  *       500:
  *         description: Server error
  */
-  productRouter.get("/", getAllProducts);
+productRouter.get("/", getAllProducts);
+/**
+ * @swagger
+ * /api/product/{productId}:
+ *   get:
+ *     tags:
+ *       - Product
+ *     summary: Get product information by its offerId
+ *     description: Retrieve information about a single product by its offerId from the database.
+ *     parameters:
+ *       - name: productId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *           description: The unique identifier for the product.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved product information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: The unique identifier for the product.
+ *                 name:
+ *                   type: string
+ *                   description: The name of the product.
+ *                 price:
+ *                   type: number
+ *                   description: The price of the product.
+ *                 description:
+ *                   type: string
+ *                   description: A brief description of the product.
+ *       500:
+ *         description: Server error
+ */
+productRouter.get("/:productId", getProduct)
 
 export default productRouter;
