@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllProducts, getProduct } from "../controllers/productControllers.js";
+import { getAllProducts, getPhoto, getProduct } from "../controllers/productControllers.js";
 
 const productRouter = express.Router();
 
@@ -70,6 +70,8 @@ const productRouter = express.Router();
  *         description: Server error
  */
 productRouter.get("/", getAllProducts);
+
+productRouter.get('/photo', getPhoto);
 /**
  * @swagger
  * /api/product/{productId}:
@@ -108,6 +110,6 @@ productRouter.get("/", getAllProducts);
  *       500:
  *         description: Server error
  */
-productRouter.get("/:productId", getProduct)
+productRouter.get("/:productId", getProduct);
 
 export default productRouter;

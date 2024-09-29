@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllCategories,
   getCategoryWithProduct,
+  getSubcategories,
 } from "../controllers/categoryControllers.js";
 
 const categoryRouter = express.Router();
@@ -43,6 +44,36 @@ const categoryRouter = express.Router();
  *         description: Server error
  */
 categoryRouter.get("/", getAllCategories);
+/**
+ * @swagger
+ * /api/category/sub/{categoryId}:
+ *   get:
+ *     summary: Get subcategories by parent category ID
+ *     description: Retrieve all subcategories for a specific category by providing its parent category ID.
+ *     tags:
+ *       - Categories
+ *     parameters:
+ *       - in: path
+ *         name: categoryId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the parent category to retrieve subcategories for.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved subcategories.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Subcategory'
+ *       404:
+ *         description: Parent category not found.
+ *       500:
+ *         description: Internal server error.
+ */
+categoryRouter.get("/sub/:categoryId", getSubcategories);
 /**
  * @swagger
  * /api/category/{categoryId}:
