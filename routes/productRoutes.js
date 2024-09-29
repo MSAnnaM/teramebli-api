@@ -70,8 +70,54 @@ const productRouter = express.Router();
  *         description: Server error
  */
 productRouter.get("/", getAllProducts);
-
-productRouter.get('/photo', getPhoto);
+/**
+ * @swagger
+ * /photo/{productId}:
+ *   get:
+ *     summary: Retrieve product photos
+ *     tags: [Product]
+ *     parameters:
+ *       - name: productId
+ *         in: path
+ *         required: true
+ *         description: ID of the product to retrieve photos for
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Photos retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 files:
+ *                   type: object
+ *                   properties:
+ *                     files:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *       404:
+ *         description: No photos found for the given product ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+productRouter.get('/photo/:productId', getPhoto);
 /**
  * @swagger
  * /api/product/{productId}:
