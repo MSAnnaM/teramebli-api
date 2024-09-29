@@ -51,7 +51,7 @@ categoryRouter.get("/", getAllCategories);
  *     summary: Get subcategories by parent category ID
  *     description: Retrieve all subcategories for a specific category by providing its parent category ID.
  *     tags:
- *       - Categories
+ *       - Category
  *     parameters:
  *       - in: path
  *         name: categoryId
