@@ -72,7 +72,7 @@ const productRouter = express.Router();
 productRouter.get("/", getAllProducts);
 /**
  * @swagger
- * /photo/{productId}:
+ * /api/product/photo/{productId}:
  *   get:
  *     summary: Retrieve product photos
  *     tags: [Product]
