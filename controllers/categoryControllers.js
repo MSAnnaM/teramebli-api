@@ -37,13 +37,23 @@ export const getCategoryWithProduct = async (req, res, next) => {
       throw HttpError(404, "Category not found");
     }
 
+    let allCategoryIds = [category.id];
+
+    if (category.parentId === null) {
+      const subcategories = await Category.find({ parentId: categoryId });
+      allCategoryIds = allCategoryIds.concat(
+        subcategories.map(subcategory => subcategory.id)
+      );
+      
+    }
+
     const skip = (page - 1) * limit;
-    const products = await Product.find({ categoryId: category.id })
+    const products = await Product.find({ categoryId: { $in: allCategoryIds } })
       .limit(limit)
       .skip(skip);
 
     const totalProducts = await Product.countDocuments({
-      categoryId: category.id,
+      categoryId: { $in: allCategoryIds },
     });
 
     res.status(200).json({
