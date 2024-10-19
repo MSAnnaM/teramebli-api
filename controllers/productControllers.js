@@ -41,7 +41,7 @@ export const getPhoto = async (req, res, next) => {
   try {
     const { productId } = req.params;
 
-    const remotePath = "/torgsoft/foto";
+    const remotePath = "tera-mebli.com/torgsoft/foto";
     const files = await getFiles(remotePath, productId);
 
     if (!files || files.files.length === 0 || !files.files) {

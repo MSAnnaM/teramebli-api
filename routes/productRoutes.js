@@ -157,5 +157,4 @@ productRouter.get('/photo/:productId', getPhoto);
  *         description: Server error
  */
 productRouter.get("/:productId", getProduct);
-
 export default productRouter;
