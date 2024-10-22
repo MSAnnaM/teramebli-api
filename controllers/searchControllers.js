@@ -26,18 +26,29 @@ export const searchProducts = async (req, res, next) => {
         { 'params.Габарит.розміри.Ширина(см)(сайт)': { $regex: term, $options: 'i' } },
       ]
     }));
+    const { page = 1, limit = 10 } = req.query;
+
+    const skip = (page - 1) * limit;
 
       
   
   const results = await Product.find({
     $and: searchConditions 
-  });
+  }).skip(skip).limit(Number(limit));
     
 
     if (results.length === 0) {
       throw HttpError(404, "Product not found");
     }
-    res.status(200).json(results);
+    const totalSearch = await Product.countDocuments();
+    const totalPages = Math.ceil(totalSearch / limit);
+
+    res.status(200).json({
+      totalSearch,
+      totalPages,
+      currentPage: page,
+      results,
+    });
   }
   catch (er) {
     next(er);

@@ -5,73 +5,62 @@ import { searchProducts } from "../controllers/searchControllers.js";
 const searchRouter = express.Router();
 /**
  * @swagger
- * tags:
- *   - name: Search
- *     description: Operations related to products
- *
- * /api/search:
+ * /products/search:
  *   get:
- *     tags: 
+ *     tags:
  *       - Search
- *     summary: Search products by parameters
- *     description: Use this endpoint to search for products by various parameters in the `params` object.
+ *     summary: Search for products based on query parameters
+ *     description: This endpoint allows searching for products by various parameters like Articul, RetailPrice, ModelName, and more. Results are paginated.
  *     parameters:
  *       - in: query
  *         name: info
  *         required: true
- *         description: Search terms separated by +.
  *         schema:
  *           type: string
- *           example: "ліжко+18000"
+ *         description: Search term for finding products (can be a product name, articul, price, etc.)
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: The page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of results per page.
  *     responses:
  *       200:
- *         description: A list of products matching the search criteria.
+ *         description: A list of matching products.
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   _id:
- *                     type: string
- *                   offerId:
- *                     type: string
- *                   type:
- *                     type: string
- *                   available:
- *                     type: boolean
- *                   currencyId:
- *                     type: string
- *                   categoryId:
- *                     type: string
- *                   params:
- *                     type: object
- *                     properties:
- *                       Articul:
- *                         type: string
- *                       RetailPrice:
- *                         type: string
- *                       RetailPriceWithDiscount:
- *                         type: string
- *                       ModelName:
- *                         type: string
- *                       GoodNameUA:
- *                         type: string
- *                       Приналежність до категорії:
- *                         type: string
- *                       Габарит.розміри:
- *                         type: object
- *                         properties:
- *                           Висота:
- *                             type: string
- *                           Довжина:
- *                             type: string
- *                           Ширина:
- *                             type: string
+ *               type: object
+ *               properties:
+ *                 totalSearch:
+ *                   type: integer
+ *                   description: Total number of search results.
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Total number of pages.
+ *                 currentPage:
+ *                   type: integer
+ *                   description: Current page number.
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: Bad request (missing or invalid query parameters).
  *       404:
- *         description: Product not found
+ *         description: No products found matching the search criteria.
+ *       500:
+ *         description: Internal server error.
  */
+
 
 
 searchRouter.get("/", searchProducts);
