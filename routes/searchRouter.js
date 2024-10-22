@@ -60,8 +60,5 @@ const searchRouter = express.Router();
  *       500:
  *         description: Internal server error.
  */
-
-
-
 searchRouter.get("/", searchProducts);
 export default searchRouter;

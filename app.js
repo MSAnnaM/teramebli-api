@@ -11,6 +11,7 @@ import productRouter from "./routes/productRoutes.js";
 import categoryRouter from "./routes/categoryRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import searchRouter from "./routes/searchRouter.js";
+import reviewRouter from "./routes/reviewRoutes.js";
 
 
 
@@ -26,6 +27,7 @@ app.use("/api/category",categoryRouter);
 app.use("/api/product", productRouter);
 app.use("/api", orderRouter);
 app.use("/api/search", searchRouter);
+app.use("/api/reviews", reviewRouter);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((_, res) => {
