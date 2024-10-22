@@ -5,7 +5,7 @@ import { searchProducts } from "../controllers/searchControllers.js";
 const searchRouter = express.Router();
 /**
  * @swagger
- * /products/search:
+ * /api/search:
  *   get:
  *     tags:
  *       - Search
