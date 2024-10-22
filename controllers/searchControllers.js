@@ -40,7 +40,7 @@ export const searchProducts = async (req, res, next) => {
     if (results.length === 0) {
       throw HttpError(404, "Product not found");
     }
-    const totalSearch = await Product.countDocuments();
+    const totalSearch = await Product.countDocuments({ $and: searchConditions });
     const totalPages = Math.ceil(totalSearch / limit);
 
     res.status(200).json({
