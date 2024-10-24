@@ -1,15 +1,17 @@
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
+  form: {
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   phone: { type: String, required: true },
   email: { type: String, required: true },
-    city: { type: String},
-    street: { type: String},
-    house: { type: String },
-    apartment: { type: String },
-  comment: { type: String },
+  city: { type: String },
+  street: { type: String },
+  house: { type: String },
+  apartment: { type: String },
+  comment: { type: String }
+},
   cartItems:[
     { offerId: { type: String},
       ModelName: { type: String },
@@ -20,6 +22,7 @@ const orderSchema = new mongoose.Schema({
       quantity: { type: Number, required: true }
     }
   ],
+  total:{type: mongoose.Schema.Types.Mixed},
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
