@@ -1,30 +1,28 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const orderSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    phone: { type: String, required: true },
-    email: { type: String, required: true },
-
-    extraFields: { type: mongoose.Schema.Types.Mixed, required: false },
-
-    cartItems: [
-      {
-        Articul: { type: String, required: true },
-        RetailPrice: { type: Number, required: true },
-        RetailPriceWithDiscount: { type: Number },
-        ModelName: { type: String, required: true },
-        quantity: { type: Number, required: true },
-
-        additionalFields: {
-          type: mongoose.Schema.Types.Mixed,
-          required: false,
-        },
-      },
-    ],
+const orderSchema = new mongoose.Schema({
+  firstName: { type: String, required: true },
+  lastName: { type: String, required: true },
+  phone: { type: String, required: true },
+  email: { type: String, required: true },
+  address: {
+    city: { type: String},
+    street: { type: String},
+    house: { type: String },
+    apartment: { type: String }
   },
-  { timestamps: true, strict: false }
-);
+  comment: { type: String },
+  cartItems:
+    { offerId: { type: String},
+      ModelName: { type: String },
+      Articul: { type: String, required: true },
+      RetailPrice: { type: mongoose.Schema.Types.Mixed },
+      RetailPriceWithDiscount: { type: mongoose.Schema.Types.Mixed },
+      currencyId: { type: String},
+      quantity: { type: Number, required: true }
+    }
+}, { timestamps: true });
 
-const Order = mongoose.model("Order", orderSchema);
+const Order = mongoose.model('Order', orderSchema);
+
 export default Order;
