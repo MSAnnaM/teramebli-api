@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
   form: {
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
+  firstName: { type: String },
+  lastName: { type: String},
   phone: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String },
   city: { type: String },
   street: { type: String },
   house: { type: String },
@@ -15,11 +15,11 @@ const orderSchema = new mongoose.Schema({
   cartItems:[
     { offerId: { type: String},
       ModelName: { type: String },
-      Articul: { type: String, required: true },
+      Articul: { type: String},
       RetailPrice: { type: mongoose.Schema.Types.Mixed },
       RetailPriceWithDiscount: { type: mongoose.Schema.Types.Mixed },
       currencyId: { type: String},
-      quantity: { type: Number, required: true }
+      quantity: { type: Number }
     }
   ],
   total:{type: mongoose.Schema.Types.Mixed},
