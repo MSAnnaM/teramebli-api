@@ -5,12 +5,10 @@ const orderSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   phone: { type: String, required: true },
   email: { type: String, required: true },
-  address: {
     city: { type: String},
     street: { type: String},
     house: { type: String },
-    apartment: { type: String }
-  },
+    apartment: { type: String },
   comment: { type: String },
   cartItems:
     { offerId: { type: String},
