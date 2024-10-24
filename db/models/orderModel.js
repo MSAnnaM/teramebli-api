@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
     house: { type: String },
     apartment: { type: String },
   comment: { type: String },
-  cartItems:
+  cartItems:[
     { offerId: { type: String},
       ModelName: { type: String },
       Articul: { type: String, required: true },
@@ -19,6 +19,7 @@ const orderSchema = new mongoose.Schema({
       currencyId: { type: String},
       quantity: { type: Number, required: true }
     }
+  ],
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);
