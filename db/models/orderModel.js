@@ -10,7 +10,9 @@ const orderSchema = new mongoose.Schema({
   street: { type: String },
   house: { type: String },
   apartment: { type: String },
-  comment: { type: String }
+    comment: { type: String },
+    delivery: { type: String },
+   payment: { type: String}
 },
   cartItems:[
     { offerId: { type: String},
