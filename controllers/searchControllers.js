@@ -1,56 +1,71 @@
 import Product from "../db/models/productModel.js";
 import HttpError from "../helpers/HttpError.js";
 
-
-export const searchProducts = async (req, res, next) => { 
+export const searchProducts = async (req, res, next) => {
   try {
-    const { info } = req.query;
+    const { info, page = 1, limit = 10 } = req.query;
+    const { paramsKey } = req.params;
+    const allowedParamsKeys = [
+      "paramsFrom_01_MebliBalta",
+      "paramsFrom_02_MebliPodilsk",
+      "paramsFrom_03_MebliPervomaisk",
+      "paramsFrom_04_MebliOdesa1",
+      "paramsFrom_05_MebliVoznesensk",
+    ];
+
+    if (!allowedParamsKeys.includes(paramsKey)) {
+      throw HttpError(404, "Invalid paramsKey");
+    }
 
     if (!info) {
-      throw HttpError(404, "Bad request");
+      throw HttpError(404, "Bad request, info is required");
     }
 
-      const searchTerms = info.split(' ');
-      
-      
-    const searchConditions = searchTerms.map(term => ({
-      $or: [
-        { 'params.Articul': { $regex: term, $options: 'i' } },
-        { 'params.RetailPrice': { $regex: term, $options: 'i' } },
-        { 'params.RetailPriceWithDiscount': { $regex: term, $options: 'i' } },
-        { 'params.ModelName': { $regex: term, $options: 'i' } },
-        { 'params.GoodNameUA': { $regex: term, $options: 'i' } },
-        { 'params.Приналежність до категорії': { $regex: term, $options: 'i' } },
-        { 'params.Габарит.розміри.Висота(см)(сайт)': { $regex: term, $options: 'i' } },
-        { 'params.Габарит.розміри.Довжина(см)(сайт)': { $regex: term, $options: 'i' } },
-        { 'params.Габарит.розміри.Ширина(см)(сайт)': { $regex: term, $options: 'i' } },
-      ]
+    const searchTerms = info.split(" ");
+    const searchConditions = searchTerms.map((term) => ({
+      $regex: term,
+      $options: "i",
     }));
-    const { page = 1, limit = 10 } = req.query;
+
+    const sampleDocument = await Product.findOne({
+      [paramsKey]: { $exists: true },
+    }).lean();
+    if (!sampleDocument || !sampleDocument[paramsKey]) {
+      throw HttpError(404, `No document with ${paramsKey} found`);
+    }
+
+    const actualKeys = Object.keys(sampleDocument[paramsKey]);
+
+    const searchConditionsForParams = actualKeys.flatMap((key) =>
+      searchConditions.map((condition) => ({
+        [`${paramsKey}.${key}`]: condition,
+      }))
+    );
 
     const skip = (page - 1) * limit;
-
-      
-  
-  const results = await Product.find({
-    $and: searchConditions 
-  }).skip(skip).limit(Number(limit));
-    
+    const results = await Product.find({
+      $or: searchConditionsForParams,
+    })
+      .skip(skip)
+      .limit(Number(limit));
 
     if (results.length === 0) {
-      throw HttpError(404, "Product not found");
+      return res.status(404).json({ message: "Product not found" });
     }
-    const totalSearch = await Product.countDocuments({ $and: searchConditions });
+
+    const totalSearch = await Product.countDocuments({
+      $or: searchConditionsForParams,
+    });
     const totalPages = Math.ceil(totalSearch / limit);
 
     res.status(200).json({
       totalSearch,
       totalPages,
-      currentPage: page,
+      currentPage: Number(page),
       results,
     });
+  } catch (error) {
+    console.error("Error during search:", error);
+    next(error);
   }
-  catch (er) {
-    next(er);
-  }
-}
+};
