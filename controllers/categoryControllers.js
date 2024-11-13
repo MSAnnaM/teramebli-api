@@ -33,18 +33,23 @@ export const getCategoryWithProduct = async (req, res, next) => {
     const limit = +req.query.limit || 10;
 
     const category = await Category.findOne({ id: categoryId });
+
     if (!category) {
       throw HttpError(404, "Category not found");
     }
 
     let allCategoryIds = [category.id];
 
+    if (category.parentId) {
+      const parent = await Category.findOne({ id: category.parentId });
+      category._doc.parent = parent;
+    }
+
     if (category.parentId === null) {
       const subcategories = await Category.find({ parentId: categoryId });
       allCategoryIds = allCategoryIds.concat(
-        subcategories.map(subcategory => subcategory.id)
+        subcategories.map((subcategory) => subcategory.id)
       );
-      
     }
 
     const skip = (page - 1) * limit;
