@@ -5,6 +5,7 @@ export const searchProducts = async (req, res, next) => {
   try {
     const { info, page = 1, limit = 10 } = req.query;
     const { paramsKey } = req.params;
+
     const allowedParamsKeys = [
       "paramsFrom_01_MebliBalta",
       "paramsFrom_02_MebliPodilsk",
@@ -18,7 +19,7 @@ export const searchProducts = async (req, res, next) => {
     }
 
     if (!info) {
-      throw HttpError(404, "Bad request, info is required");
+      throw HttpError(404, "Bad request, 'info' is required");
     }
 
     const searchTerms = info.split(" ");
@@ -30,6 +31,7 @@ export const searchProducts = async (req, res, next) => {
     const sampleDocument = await Product.findOne({
       [paramsKey]: { $exists: true },
     }).lean();
+
     if (!sampleDocument || !sampleDocument[paramsKey]) {
       throw HttpError(404, `No document with ${paramsKey} found`);
     }
@@ -42,20 +44,21 @@ export const searchProducts = async (req, res, next) => {
       }))
     );
 
-    const skip = (page - 1) * limit;
-    const results = await Product.find({
+    const filters = {
+      [`${paramsKey}.Відображення на сайті`]: "1",
+      [`${paramsKey}.ModelName`]: { $ne: "" },
       $or: searchConditionsForParams,
-    })
-      .skip(skip)
-      .limit(Number(limit));
+    };
+
+    const skip = (page - 1) * limit;
+
+    const results = await Product.find(filters).skip(skip).limit(Number(limit));
 
     if (results.length === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    const totalSearch = await Product.countDocuments({
-      $or: searchConditionsForParams,
-    });
+    const totalSearch = await Product.countDocuments(filters);
     const totalPages = Math.ceil(totalSearch / limit);
 
     res.status(200).json({
