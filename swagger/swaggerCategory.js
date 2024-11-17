@@ -82,7 +82,7 @@
  *         required: false
  *         schema:
  *           type: string
- *           default: createdAt
+ *           default: RetailPrice
  *         description: The field to sort products by.
  *       - name: order
  *         in: query
@@ -92,6 +92,26 @@
  *           enum: [asc, desc]
  *           default: asc
  *         description: The sort order (ascending or descending).
+ *       - name: location
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [mebliBalta, mebliPodilsk, mebliPervomaisk, mebliOdesa1, mebliVoznesensk]
+ *           default: mebliPervomaisk
+ *         description: The location (storage) for filtering and sorting products.
+ *       - name: filterKey
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: The field name to filter products by.
+ *       - name: filterValue
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: The value to filter products by.
  *     responses:
  *       200:
  *         description: Category or subcategory with products
@@ -121,7 +141,7 @@
  *                       name:
  *                         type: string
  *                         description: The name of the product.
- *                       price:
+ *                       RetailPrice:
  *                         type: number
  *                         description: The price of the product.
  *                       description:

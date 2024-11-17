@@ -30,9 +30,10 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		const {
 			page = 1,
 			limit = 12,
-			sortBy = '',
+			sortBy = 'RetailPrice',
 			order = 'asc',
 			location = 'mebliPervomaisk',
+			...filters
 		} = req.query
 
 		const locationMap = {
@@ -40,7 +41,7 @@ export const getCategoryWithProducts = async (req, res, next) => {
 			mebliPodilsk: 'paramsFrom_02_MebliPodilsk',
 			mebliPervomaisk: 'paramsFrom_03_MebliPervomaisk',
 			mebliOdesa1: 'paramsFrom_04_MebliOdesa1',
-			mebliVoznesensk: 'paramsFrom_05_MebliVoznesensk',
+			mebliVozнесensk: 'paramsFrom_05_MebliVozнесensk',
 		}
 
 		const sortField = locationMap[location]
@@ -61,21 +62,23 @@ export const getCategoryWithProducts = async (req, res, next) => {
 
 		const sortOption = { [`${sortField}.${sortBy}`]: order === 'asc' ? 1 : -1 }
 
+		const queryFilter = { [sortField]: { $exists: true } }
+		Object.entries(filters).forEach(([key, value]) => {
+			if (dynamicKeys.includes(key)) {
+				queryFilter[`${sortField}.${key}`] = value
+			}
+		})
+
 		const category = await Category.findOne({ id: categoryId })
 		if (!category) {
 			throw HttpError(404, 'Category not found')
 		}
 
 		if (category.parentId) {
-			const totalProducts = await Product.countDocuments({
-				categoryId,
-				[sortField]: { $exists: true },
-			})
+			queryFilter.categoryId = categoryId
+			const totalProducts = await Product.countDocuments(queryFilter)
 			const skip = (page - 1) * limit
-			const products = await Product.find({
-				categoryId,
-				[sortField]: { $exists: true },
-			})
+			const products = await Product.find(queryFilter)
 				.sort(sortOption)
 				.skip(skip)
 				.limit(Number(limit))
@@ -96,7 +99,7 @@ export const getCategoryWithProducts = async (req, res, next) => {
 			for (const subcategory of subcategories) {
 				const products = await Product.find({
 					categoryId: subcategory.id,
-					[sortField]: { $exists: true },
+					...queryFilter,
 				})
 				allProducts = allProducts.concat(products)
 
