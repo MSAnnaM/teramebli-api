@@ -30,22 +30,15 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		const {
 			page = 1,
 			limit = 12,
-			sortBy = 'createdAt',
+			sortBy = RetailPrice,
 			order = 'asc',
+			sortField = 'paramsFrom_03_MebliPervomaisk', // Default to first paramsFrom_
 		} = req.query
 
-		const sampleDocument = await Product.findOne().lean()
-		if (!sampleDocument) {
-			throw HttpError(404, 'No products found to determine sort keys')
-		}
+		const dynamicKeys = await extractDynamicKeys()
+		const validSortKeys = ['createdAt', ...dynamicKeys]
 
-		const dynamicSortKeys = Object.keys(sampleDocument)
-		if (sampleDocument.params) {
-			const paramKeys = Object.keys(sampleDocument.params).map(key => `${key}`)
-			dynamicSortKeys.push(...paramKeys)
-		}
-
-		if (!dynamicSortKeys.includes(sortBy)) {
+		if (!validSortKeys.includes(sortBy)) {
 			throw HttpError(400, `Invalid sort key: '${sortBy}'`)
 		}
 
@@ -53,7 +46,7 @@ export const getCategoryWithProducts = async (req, res, next) => {
 			throw HttpError(400, `Invalid sort order: '${order}'`)
 		}
 
-		const sortOption = { [sortBy]: order === 'asc' ? 1 : -1 }
+		const sortOption = { [`${sortField}.${sortBy}`]: order === 'asc' ? 1 : -1 }
 
 		const category = await Category.findOne({ id: categoryId })
 		if (!category) {
@@ -96,8 +89,8 @@ export const getCategoryWithProducts = async (req, res, next) => {
 			const totalProducts = allSubcategoryProducts.length
 
 			const sortedProducts = allSubcategoryProducts.sort((a, b) => {
-				const fieldA = a[sortBy]
-				const fieldB = b[sortBy]
+				const fieldA = a[sortField]?.[sortBy] || 0
+				const fieldB = b[sortField]?.[sortBy] || 0
 				if (order === 'asc') {
 					return fieldA > fieldB ? 1 : -1
 				}
@@ -119,4 +112,21 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		console.error('Error in getCategoryWithProducts:', error)
 		next(error)
 	}
+}
+
+const extractDynamicKeys = async () => {
+	const sampleProduct = await Product.findOne().lean()
+	if (!sampleProduct) {
+		throw new Error('No products available to extract keys')
+	}
+
+	const dynamicKeys = []
+	Object.keys(sampleProduct).forEach(key => {
+		if (key.startsWith('paramsFrom_')) {
+			const paramKeys = Object.keys(sampleProduct[key])
+			dynamicKeys.push(...paramKeys)
+		}
+	})
+
+	return Array.from(new Set(dynamicKeys))
 }
