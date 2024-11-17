@@ -1,8 +1,3 @@
-import express from "express";
-import { searchProducts } from "../controllers/searchControllers.js";
-
-
-const searchRouter = express.Router();
 /**
  * @swagger
  * /api/search/{paramsKey}:
@@ -66,5 +61,3 @@ const searchRouter = express.Router();
  *       500:
  *         description: Internal server error.
  */
-searchRouter.get("/:paramsKey", searchProducts);
-export default searchRouter;

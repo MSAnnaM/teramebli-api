@@ -1,8 +1,3 @@
-import express from "express";
-import { createOrder } from "../controllers/orderControllers.js";
-
-const orderRouter = express.Router();
-
 /**
  * @swagger
  * tags:
@@ -51,6 +46,3 @@ const orderRouter = express.Router();
  *       400:
  *         description: Bad request
  */
-orderRouter.post("/order", createOrder);
-
-export default orderRouter;

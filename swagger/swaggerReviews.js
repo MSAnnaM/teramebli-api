@@ -1,8 +1,3 @@
-import express from 'express';
-import { createReview, getReviews } from '../controllers/reviewControllers.js';
-
-const reviewRouter = express.Router();
-
 /**
  * @swagger
  * /api/reviews:
@@ -48,8 +43,6 @@ const reviewRouter = express.Router();
  *         description: Internal server error
  */
 
-reviewRouter.post('/', createReview);
-
 /**
  * @swagger
  * /api/reviews/{productId}:
@@ -83,6 +76,3 @@ reviewRouter.post('/', createReview);
  *       500:
  *         description: Internal server error
  */
-reviewRouter.get('/:productId', getReviews);
-
-export default reviewRouter;
