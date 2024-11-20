@@ -30,8 +30,6 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		const {
 			page = 1,
 			limit = 12,
-			sortBy = 'RetailPrice',
-			order = 'asc',
 			location = 'mebliPervomaisk',
 			...filters
 		} = req.query
@@ -44,28 +42,17 @@ export const getCategoryWithProducts = async (req, res, next) => {
 			mebliVozнесensk: 'paramsFrom_05_MebliVozнесensk',
 		}
 
-		const sortField = locationMap[location]
-		if (!sortField) {
+		const filterField = locationMap[location]
+		if (!filterField) {
 			throw HttpError(400, `Invalid location: '${location}'`)
 		}
 
 		const dynamicKeys = await extractDynamicKeys()
-		const validSortKeys = ['createdAt', ...dynamicKeys]
 
-		if (!validSortKeys.includes(sortBy)) {
-			throw HttpError(400, `Invalid sort key: '${sortBy}'`)
-		}
-
-		if (!['asc', 'desc'].includes(order)) {
-			throw HttpError(400, `Invalid sort order: '${order}'`)
-		}
-
-		const sortOption = { [`${sortField}.${sortBy}`]: order === 'asc' ? 1 : -1 }
-
-		const queryFilter = { [sortField]: { $exists: true } }
+		const queryFilter = { [`${filterField}`]: { $exists: true } }
 		Object.entries(filters).forEach(([key, value]) => {
 			if (dynamicKeys.includes(key)) {
-				queryFilter[`${sortField}.${key}`] = value
+				queryFilter[`${filterField}.${key}`] = value
 			}
 		})
 
@@ -75,11 +62,15 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		}
 
 		if (category.parentId) {
+			const parent = await Category.findOne({ id: category.parentId })
+			category._doc.parent = parent
+		}
+
+		if (category.parentId) {
 			queryFilter.categoryId = categoryId
 			const totalProducts = await Product.countDocuments(queryFilter)
 			const skip = (page - 1) * limit
 			const products = await Product.find(queryFilter)
-				.sort(sortOption)
 				.skip(skip)
 				.limit(Number(limit))
 
@@ -111,19 +102,13 @@ export const getCategoryWithProducts = async (req, res, next) => {
 		}
 
 		const allSubcategoryProducts = await gatherSubcategoryProducts(categoryId)
-
 		const totalProducts = allSubcategoryProducts.length
-		const sortedProducts = allSubcategoryProducts.sort((a, b) => {
-			const fieldA = a[sortField]?.[sortBy] || 0
-			const fieldB = b[sortField]?.[sortBy] || 0
-			if (order === 'asc') {
-				return fieldA > fieldB ? 1 : -1
-			}
-			return fieldA < fieldB ? 1 : -1
-		})
 
 		const skip = (page - 1) * limit
-		const paginatedProducts = sortedProducts.slice(skip, skip + Number(limit))
+		const paginatedProducts = allSubcategoryProducts.slice(
+			skip,
+			skip + Number(limit)
+		)
 
 		return res.status(200).json({
 			...category._doc,

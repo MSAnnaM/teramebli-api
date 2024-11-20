@@ -11,8 +11,8 @@
  *   get:
  *     tags:
  *       - Category
- *     summary: Get all categories
- *     description: Retrieves a list of all categories, including their subcategories.
+ *     summary: Retrieve all categories
+ *     description: Returns a list of all categories, including their subcategories.
  *     responses:
  *       200:
  *         description: List of categories
@@ -21,29 +21,7 @@
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: The unique identifier of the category.
- *                   name:
- *                     type: string
- *                     description: The name of the category.
- *                   parentId:
- *                     type: integer
- *                     nullable: true
- *                     description: The ID of the parent category, if applicable.
- *                   subcategories:
- *                     type: array
- *                     items:
- *                       type: object
- *                       properties:
- *                         id:
- *                           type: integer
- *                           description: The unique identifier of the subcategory.
- *                         name:
- *                           type: string
- *                           description: The name of the subcategory.
+ *                 $ref: '#/components/schemas/Category'
  *       500:
  *         description: Server error
  */
@@ -54,8 +32,8 @@
  *   get:
  *     tags:
  *       - Category
- *     summary: Get a category or subcategory with products
- *     description: Retrieves category or subcategory details. If it is a main category, all products from its subcategories are included. If it is a subcategory, only its products are shown.
+ *     summary: Retrieve a category or subcategory with products
+ *     description: Returns the details of a category or subcategory. If it is a main category, all products from its subcategories are included. If it is a subcategory, only its products are returned.
  *     parameters:
  *       - name: categoryId
  *         in: path
@@ -76,36 +54,21 @@
  *         schema:
  *           type: integer
  *           default: 12
- *         description: The number of products per page for pagination.
- *       - name: sortBy
- *         in: query
- *         required: false
- *         schema:
- *           type: string
- *           default: RetailPrice
- *         description: The field to sort products by.
- *       - name: order
- *         in: query
- *         required: false
- *         schema:
- *           type: string
- *           enum: [asc, desc]
- *           default: asc
- *         description: The sort order (ascending or descending).
+ *         description: The number of products per page.
  *       - name: location
  *         in: query
  *         required: false
  *         schema:
  *           type: string
- *           enum: [mebliBalta, mebliPodilsk, mebliPervomaisk, mebliOdesa1, mebliVoznesensk]
+ *           enum: [mebliBalta, mebliPodilsk, mebliPervomaisk, mebliOdesa1, mebliVozнесensk]
  *           default: mebliPervomaisk
- *         description: The location (storage) for filtering and sorting products.
+ *         description: The location (storage) for filtering products.
  *       - name: filterKey
  *         in: query
  *         required: false
  *         schema:
  *           type: string
- *         description: The field name to filter products by.
+ *         description: The field to filter products by.
  *       - name: filterValue
  *         in: query
  *         required: false
@@ -114,50 +77,87 @@
  *         description: The value to filter products by.
  *     responses:
  *       200:
- *         description: Category or subcategory with products
+ *         description: Details of the category or subcategory with products
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: integer
- *                   description: The unique identifier of the category.
- *                 name:
- *                   type: string
- *                   description: The name of the category.
- *                 parentId:
- *                   type: integer
- *                   nullable: true
- *                   description: The ID of the parent category, if applicable.
- *                 products:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: string
- *                         description: The unique identifier of the product.
- *                       name:
- *                         type: string
- *                         description: The name of the product.
- *                       RetailPrice:
- *                         type: number
- *                         description: The price of the product.
- *                       description:
- *                         type: string
- *                         description: A brief description of the product.
- *                 totalProducts:
- *                   type: integer
- *                   description: The total number of products.
- *                 totalPages:
- *                   type: integer
- *                   description: The total number of pages.
- *                 currentPage:
- *                   type: integer
- *                   description: The current page number.
+ *               $ref: '#/components/schemas/CategoryWithProducts'
  *       404:
  *         description: Category not found
  *       500:
  *         description: Server error
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The unique identifier of the category.
+ *         name:
+ *           type: string
+ *           description: The name of the category.
+ *         parentId:
+ *           type: integer
+ *           nullable: true
+ *           description: The ID of the parent category, if applicable.
+ *         subcategories:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Category'
+ *     Product:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: The unique identifier of the product.
+ *         name:
+ *           type: string
+ *           description: The name of the product.
+ *         RetailPrice:
+ *           type: number
+ *           description: The price of the product.
+ *         description:
+ *           type: string
+ *           description: A brief description of the product.
+ *     CategoryWithProducts:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The unique identifier of the category.
+ *         name:
+ *           type: string
+ *           description: The name of the category.
+ *         parent:
+ *           type: object
+ *           nullable: true
+ *           properties:
+ *             id:
+ *               type: integer
+ *               description: The unique identifier of the parent category.
+ *             name:
+ *               type: string
+ *               description: The name of the parent category.
+ *         parentId:
+ *           type: integer
+ *           nullable: true
+ *           description: The ID of the parent category, if applicable.
+ *         products:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Product'
+ *         totalProducts:
+ *           type: integer
+ *           description: The total number of products.
+ *         totalPages:
+ *           type: integer
+ *           description: The total number of pages.
+ *         currentPage:
+ *           type: integer
+ *           description: The current page number.
  */
