@@ -8,7 +8,7 @@ const productSchema = new Schema(
 		type: { type: String, default: 'vendor.model' },
 		available: { type: Boolean, required: true },
 		currencyId: { type: String, required: true },
-		categoryId: { type: String, required: true },
+		categoryId: { type: [String | Number], required: true },
 		subcategoryId: { type: String, required: false },
 		params: {
 			type: Schema.Types.Mixed,

@@ -1,7 +1,9 @@
 import express from 'express'
-import { getPhoto, getProduct } from './productControllers.js'
+import { getAllProducts, getPhoto, getProduct } from './productControllers.js'
 
 const productRouter = express.Router()
+
+productRouter.get('/', getAllProducts)
 
 productRouter.get('/photo/:productId', getPhoto)
 
