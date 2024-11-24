@@ -1,32 +1,30 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const orderSchema = new mongoose.Schema({
-  form: {
-  firstName: { type: String },
-  lastName: { type: String},
-  phone: { type: String, required: true },
-  email: { type: String },
-  city: { type: String },
-  street: { type: String },
-  house: { type: String },
-  apartment: { type: String },
-    comment: { type: String },
-    delivery: { type: String },
-   payment: { type: String}
-},
-  cartItems:[
-    { offerId: { type: String},
-      ModelName: { type: String },
-      Articul: { type: String},
-      RetailPrice: { type: mongoose.Schema.Types.Mixed },
-      RetailPriceWithDiscount: { type: mongoose.Schema.Types.Mixed },
-      currencyId: { type: String},
-      quantity: { type: Number }
-    }
-  ],
-  total:{type: mongoose.Schema.Types.Mixed},
-}, { timestamps: true });
+const orderSchema = new mongoose.Schema(
+	{
+		firstName: { type: String, required: true },
+		lastName: { type: String, required: true },
+		phone: { type: String, required: true },
+		email: { type: String, required: true },
+		city: { type: String },
+		street: { type: String },
+		house: { type: String },
+		apartment: { type: String },
+		comment: { type: String },
 
-const Order = mongoose.model('Order', orderSchema);
+		cartItems: {
+			offerId: { type: String },
+			ModelName: { type: String },
+			Articul: { type: String, required: true },
+			RetailPrice: { type: mongoose.Schema.Types.Mixed },
+			RetailPriceWithDiscount: { type: mongoose.Schema.Types.Mixed },
+			currencyId: { type: String },
+			quantity: { type: Number, required: true },
+		},
+	},
+	{ timestamps: true }
+)
 
-export default Order;
+const Order = mongoose.model('Order', orderSchema)
+
+export default Order

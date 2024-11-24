@@ -5,19 +5,13 @@ import { searchProducts } from "../controllers/searchControllers.js";
 const searchRouter = express.Router();
 /**
  * @swagger
- * /api/search/{paramsKey}:
+ * /api/search:
  *   get:
  *     tags:
  *       - Search
  *     summary: Search for products based on query parameters
  *     description: This endpoint allows searching for products by various parameters like Articul, RetailPrice, ModelName, and more. Results are paginated.
  *     parameters:
- *       - in: path
- *         name: paramsKey
- *         required: true
- *         schema:
- *           type: string
- *         description: The key for the product parameters (e.g., paramsFrom_01_MebliBalta).
  *       - in: query
  *         name: info
  *         required: true
@@ -66,5 +60,5 @@ const searchRouter = express.Router();
  *       500:
  *         description: Internal server error.
  */
-searchRouter.get("/:paramsKey", searchProducts);
+searchRouter.get("/", searchProducts);
 export default searchRouter;
