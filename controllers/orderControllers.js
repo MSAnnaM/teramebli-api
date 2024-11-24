@@ -1,5 +1,5 @@
-import Order from "./orderModel.js";
-import HttpError from "../../helpers/HttpError.js";
+import Order from "../db/models/orderModel.js";
+import HttpError from "../helpers/HttpError.js";
 
 export const createOrder = async (req, res, next) => {
   try {
