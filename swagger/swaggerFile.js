@@ -1,10 +1,3 @@
-import express from "express";
-import upload from "../midellwares/upload.js";
-import { createDB, updateDB } from "../controllers/fileController.js";
-
-
-const fileRouter = express.Router();
-
 /**
  * @swagger
  * tags:
@@ -35,7 +28,6 @@ const fileRouter = express.Router();
  *       500:
  *         description: Internal server error
  */
-fileRouter.post('/create', upload.single('file'), createDB);
 /**
  * @swagger
  * /api/file/update:
@@ -60,7 +52,3 @@ fileRouter.post('/create', upload.single('file'), createDB);
  *       500:
  *         description: Internal server error
  */
-fileRouter.patch("/update", upload.single('file'), updateDB);
-
-
-export default fileRouter;
